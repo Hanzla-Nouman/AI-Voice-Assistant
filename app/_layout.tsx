@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
   return (<>
-   <StatusBar barStyle={"dark-content"} />
+  
     <NavigationContainer independent={true}>
       <Stack.Navigator>
         <Stack.Screen name="Index" component={Index} options={{headerShown:false}} />

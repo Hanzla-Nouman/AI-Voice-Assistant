@@ -16,7 +16,8 @@ export default function Index() {
   return (
     <>
     <View className="bg-white flex-1">
-   <StatusBar  barStyle={"dark-content"}/>
+    <StatusBar barStyle={"dark-content"} />
+
 
       <SafeAreaView className=" flex-1 my-7 flex items-center justify-around ">
         <View className="space-y-2">
