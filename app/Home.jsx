@@ -155,7 +155,7 @@ const Home = () => {
   );
 };
 
-// export default Home;
+export default Home;
 // import * as React from 'react';
 // import { View, StyleSheet, Button } from 'react-native';
 // import * as Speech from 'expo-speech';
