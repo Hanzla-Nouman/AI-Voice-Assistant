@@ -168,7 +168,7 @@ const Home = () => {
 
 //   return (
 //     <View style={styles.container}>
-//       <Button title="Press to hear some words" onPress={speak} />
+//       <Button title="Press" onPress={speak} />
 //     </View>
 //   );
 // }
