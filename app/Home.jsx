@@ -8,6 +8,7 @@ import {
   ScrollViewBase,
   StatusBar,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -19,20 +20,28 @@ const Home = () => {
   const [messages, setMessages] = useState(dummyMessages);
   const [recording, setRecording] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const handleClear=()=>{
+  const handleClear = () => {
     setMessages([]);
-  }
-  const handleStop=()=>{
+  };
+  const handleStop = () => {
     setRecording(false);
     setSpeaking(false);
-  }
+  };
+  const handleStopRecord = () => {
+    setSpeaking(false);
+    setRecording(false);
+  };
+  const handleRecord = () => {
+    setSpeaking(true);
+    setRecording(true);
+  };
   return (
     <>
       <View className="flex-1 bg-white justify-around">
         <StatusBar barStyle={"dark-content"} />
 
         <SafeAreaView className="mx-5 my-4 flex-1 justify-around ">
-          <View className="justify-center items-center mt-4">
+          <View className=" flex-row justify-center items-center mt-4">
             <Image
               style={{ height: hp(20), width: hp(20) }}
               source={require("../assets/images/bot.png")}
@@ -65,15 +74,15 @@ const Home = () => {
                               key={index}
                               className="flex-row justify-start"
                             >
-                                <View className=" p-2 rounded-2xl rounded-tl-none bg-emerald-100">
-                              <Image
-                              resizeMode="contain"
-                              className="rounded-xl"
-                                style={{ width: wp(60), height: wp(60) }}
-                                source={{
-                                  uri: message.content,
-                                }}
-                              />
+                              <View className=" p-2 rounded-2xl rounded-tl-none bg-emerald-100">
+                                <Image
+                                  resizeMode="contain"
+                                  className="rounded-xl"
+                                  style={{ width: wp(60), height: wp(60) }}
+                                  source={{
+                                    uri: message.content,
+                                  }}
+                                />
                               </View>
                             </View>
                           );
@@ -107,9 +116,7 @@ const Home = () => {
                     })}
                   </ScrollView>
                 </View>
-
-                </View>
-                
+              </View>
             </>
           ) : (
             <>
@@ -117,37 +124,48 @@ const Home = () => {
             </>
           )}
           <View className="flex justify-center items-center mb-3">
-           {recording?(
-            <TouchableOpacity>
-            <Image
-              style={{ height: hp(10), width: hp(10) }}
-              source={require("../assets/images/mic.png")}
-            />
-            </TouchableOpacity>):(
-            <TouchableOpacity className="border-4 p-2 rounded-full">
-            <Image
-              style={{ height: hp(6), width: hp(6) }}
-              source={require("../assets/images/mic1.png")}
-            />
-            </TouchableOpacity>)}
-            {
-              messages.length > 0 && (
-                <TouchableOpacity onPress={handleClear}  className="bg-neutral-400 rounded-3xl p-2 absolute right-10">
-                    <Text className="text-white font-semibold text-md px-2">
-                      Clear
-                    </Text>
-                </TouchableOpacity>
-              )
-            }
-            {
-              speaking && (
-                <TouchableOpacity onPress={handleStop} className="bg-red-400 rounded-3xl p-2 absolute left-10">
-                    <Text className="text-white font-semibold text-md px-2">
-                      Stop
-                    </Text>
-                </TouchableOpacity>
-              )
-            }
+            {recording ? (
+              <TouchableOpacity
+                onPress={handleStopRecord}
+                className="border-4 p-2 rounded-full"
+              >
+                <Image
+                  style={{ height: hp(6), width: hp(6) }}
+                  source={require("../assets/images/mic.png")}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={handleRecord}
+                className="border-4 p-2 rounded-full"
+              >
+                <Image
+                  style={{ height: hp(6), width: hp(6) }}
+                  source={require("../assets/images/mic1.png")}
+                />
+              </TouchableOpacity>
+            )}
+
+            {messages.length > 0 && (
+              <TouchableOpacity
+                onPress={handleClear}
+                className="bg-neutral-400 rounded-3xl p-2 absolute right-10"
+              >
+                <Text className="text-white font-semibold text-md px-2">
+                  Clear
+                </Text>
+              </TouchableOpacity>
+            )}
+            {speaking && (
+              <TouchableOpacity
+                onPress={handleStop}
+                className="bg-red-400 rounded-3xl p-2 absolute left-10"
+              >
+                <Text className="text-white font-semibold text-md px-2">
+                  Stop
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </SafeAreaView>
       </View>
