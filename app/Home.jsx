@@ -3,6 +3,7 @@ import { dummyMessages } from "@/constants/mesages";
 import React, { useState,useEffect } from "react";
 import {
   Image,
+  Pressable,
   SafeAreaView,
   ScrollView,
   ScrollViewBase,
@@ -17,6 +18,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Voice from '@react-native-community/voice';
+import { Ionicons } from "@expo/vector-icons";
 const Home = () => {
   const [pitch, setPitch] = useState('');
   const [error, setError] = useState('');
@@ -104,36 +106,39 @@ useEffect(() => {
       <View className="flex-1 bg-white justify-around">
         <StatusBar barStyle={"dark-content"} />
 
-        <SafeAreaView className="mx-5 my-4 flex-1 justify-around ">
-          <View className=" flex-row justify-center items-center mt-4">
+        <SafeAreaView className=" mt-6 flex-1 justify-around ">
+          {/* <View className=" flex-row justify-center items-center mt-4">
             <Image
               style={{ height: hp(20), width: hp(20) }}
               source={require("../assets/images/bot.png")}
             />
-          </View>
+          </View> */}
           {messages.length > 0 ? (
             <>
-              <View className="space-y-2 flex-1 ">
+              <View className="flex-row items-center justify-between pr-4">
+                <View className="flex-row items-center">
+                <Image
+           style={{ height: hp(8), width: hp(8) }}
+           source={require("../assets/images/bot.png")}
+         />
                 <Text
                   style={{ fontSize: wp(5) }}
-                  className="text-gray-700 font-semibold ml-1"
+                  className="text-gray-700 font-medium "
                 >
                   Assistant
                 </Text>
-                {partialResults.map((result, index) => {
-         return (
-           <Text key={`partial-result-${index}`} style={ styles.resultBox }>
-              {result}
-           </Text>
-         ); })}
+                </View>
+                <Ionicons name="menu" size={30} color="black" />
+                </View>
+              <View className="space-y-2 flex-1 ">
                 <View
-                  style={{ height: hp(56) }}
-                  className="bg-neutral-300 rounded-3xl p-4"
+                  style={{ }}
+                  className="bg-neutral-300  px-4"
                 >
                   <ScrollView
                     overScrollMode="never"
                     bounces={false}
-                    className="space-y-4"
+                    className="space-y-4 pt-2 "
                     showsVerticalScrollIndicator={false}
                   >
                     {messages.map((message, index) => {
@@ -163,8 +168,8 @@ useEffect(() => {
                               className="flex-row justify-start"
                             >
                               <View
-                                style={{ width: wp(70) }}
-                                className="bg-emerald-100 rounded-xl p-2 rounded-tl-none"
+                                style={{  }}
+                                className="bg-emerald-100 max-w-[300]  rounded-xl p-2 rounded-tl-none"
                               >
                                 <Text>{message.content}</Text>
                               </View>
@@ -173,10 +178,10 @@ useEffect(() => {
                         }
                       } else {
                         return (
-                          <View key={index} className="flex-row justify-end">
+                          <View key={index} className="flex-row justify-end ">
                             <View
-                              style={{ width: wp(70) }}
-                              className="bg-white rounded-xl p-2 rounded-tr-none"
+                              style={{ }}
+                              className="bg-white rounded-xl max-w-[300] p-2 rounded-tr-none"
                             >
                               <Text>{message.content}</Text>
                             </View>
@@ -193,50 +198,15 @@ useEffect(() => {
               <Features />
             </>
           )}
-          <View className="flex justify-center items-center mb-3">
-            {recording ? (
-              <TouchableOpacity
-               
-                className="border-4 p-2 rounded-full"
-              >
-                <Image
-                  style={{ height: hp(6), width: hp(6) }}
-                  source={require("../assets/images/mic.png")}
-                />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={startSpeechRecognizing}
-                className="border-4 p-2 rounded-full"
-              >
-                <Image
-                  style={{ height: hp(6), width: hp(6) }}
-                  source={require("../assets/images/mic1.png")}
-                />
-              </TouchableOpacity>
-            )}
-
-            {messages.length > 0 && (
-              <TouchableOpacity
-                onPress={handleClear}
-                className="bg-neutral-400 rounded-3xl p-2 absolute right-10"
-              >
-                <Text className="text-white font-semibold text-md px-2">
-                  Clear
-                </Text>
-              </TouchableOpacity>
-            )}
-            {speaking && (
-              <TouchableOpacity
-                onPress={stopSpeechRecognizing }
-                className="bg-red-400 rounded-3xl p-2 absolute left-10"
-              >
-                <Text className="text-white font-semibold text-md px-2">
-                  Stop
-                </Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <View className="bg-neutral-300">
+        <View className="  flex-row  relative items-center rounded-full  my-1 mx-1 ">
+         <TextInput className=" font-normal  text-lg p-3 w-full mr-10 pr-12 rounded-full pl-5 bg-white " multiline placeholder="Ask anything..."  />
+        <View className="absolute right-1 bg-emerald-500 rounded-full p-2">
+         <Ionicons name="stop" size={27} color="white" />
+         </View>
+         </View>
+        
+         </View>
         </SafeAreaView>
       </View>
     </>

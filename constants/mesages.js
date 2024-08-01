@@ -9,7 +9,7 @@ export const dummyMessages = [
   },
   {
     role: "user",
-    content: "create an image of a dog playing with cat",
+    content: "create an image of a dog playing with cat and a cat that had a cat and a cat that had a cat",
   },
   {
     role: "assistant",
