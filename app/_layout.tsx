@@ -9,6 +9,7 @@ import Home from './Home';
 import { apiCall } from '@/api/openAi';
 
 
+
 const Stack = createNativeStackNavigator();
 
 function App() {
