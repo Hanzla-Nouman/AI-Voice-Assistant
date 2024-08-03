@@ -10,6 +10,7 @@ import {
   StatusBar,
   Text,
   TextInput,
+  TouchableHighlight,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -19,87 +20,37 @@ import {
 } from "react-native-responsive-screen";
 import Voice from '@react-native-community/voice';
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
 const Home = () => {
-  const [pitch, setPitch] = useState('');
-  const [error, setError] = useState('');
-  const [end, setEnd] = useState('');
-  const [started, setStarted] = useState('');
-  const [results, setResults] = useState([]);
-  const [partialResults, setPartialResults] = useState([]);
-  const  onSpeechStart = (e) => {
-    setStarted('True')
-};
-const onSpeechEnd = () => {
-    setStarted(null);
-    setEnd('True');
-};
-const onSpeechError = (e) => {
-    setError(JSON.stringify(e.error));
-};
-const onSpeechResults = (e) => {
-    setResults(e.value)
-};
-const onSpeechPartialResults = (e) => {
-    setPartialResults(e.value)
-};
-const onSpeechVolumeChanged = (e) => {
-    setPitch(e.value)
-};
+  
   const [messages, setMessages] = useState(dummyMessages);
-  const [recording, setRecording] = useState(false);
-  const [speaking, setSpeaking] = useState(false);
-  const handleClear = () => {
-    setMessages([]);
-  };
-  const handleStop = () => {
-    setRecording(false);
-    setSpeaking(false);
-  };
-  const handleStopRecord = () => {
-    setSpeaking(false);
-    setRecording(false);
-  };
-  const handleRecord = () => {
-    setSpeaking(true);
-    setRecording(true);
-  };
-  const startSpeechRecognizing = async () => {
-    
-    setRecording(true)
-    setSpeaking(true);
-    setPitch('')
-    setError('')
-    setStarted('')
-    setResults([])
-    setPartialResults([])
-    setEnd('')
-    try {
-      console.log("recording")
-        await Voice.start('en-US',
-            {EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS: 10000});
-        } catch (e) {
-        console.error(e);
-        }
-};
-const stopSpeechRecognizing = async () => {
-    try {
-      console.log("recording stopped")
-      await Voice.stop();
-      setSpeaking(false);
-      setRecording(false)
-      setStarted(null);
-    } catch (e) {
-      console.error(e);
-    }
-};
-useEffect(() => {
-  Voice.onSpeechStart = onSpeechStart;
-  Voice.onSpeechEnd = onSpeechEnd;
-  Voice.onSpeechError = onSpeechError;
-  Voice.onSpeechResults = onSpeechResults;
-  Voice.onSpeechPartialResults = onSpeechPartialResults;
-  Voice.onSpeechVolumeChanged = onSpeechVolumeChanged;
-}, [])
+  const [text, setText] = useState("");
+
+  const handleText=(e)=>{
+    setText(e)
+  }
+ 
+const getResponse = async () => {
+  try {
+    const res = await fetch("http://192.168.100.3:4000/api/generate", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },body: JSON.stringify({
+        prompt: "This is a prompt"
+      })
+    });
+    const data = await res.json();
+    console.log(data);
+  } catch (error) {
+    console.log("Error: " + error);
+  }
+}
+
+const handleGetContent= async()=>{
+ await getResponse()
+}
 
   return (
     <>
@@ -125,7 +76,7 @@ useEffect(() => {
                   style={{ fontSize: wp(5) }}
                   className="text-gray-700 font-medium "
                 >
-                  Assistant
+                  Assistant {text}
                 </Text>
                 </View>
                 <Ionicons name="menu" size={30} color="black" />
@@ -200,10 +151,10 @@ useEffect(() => {
           )}
           <View className="bg-neutral-300">
         <View className="  flex-row  relative items-center rounded-full  my-1 mx-1 ">
-         <TextInput className=" font-normal  text-lg p-3 w-full mr-10 pr-12 rounded-full pl-5 bg-white " multiline placeholder="Ask anything..."  />
-        <View className="absolute right-1 bg-emerald-500 rounded-full p-2">
-         <Ionicons name="stop" size={27} color="white" />
-         </View>
+         <TextInput className=" font-normal  text-lg p-3 w-full mr-10 pr-12 rounded-full pl-5 bg-white" onChangeText={(e)=>handleText(e)} multiline placeholder="Ask anything..."  />
+        <TouchableHighlight className="absolute right-1 bg-emerald-500 rounded-full p-2" onPress={handleGetContent}>
+         <Ionicons name="send" size={27} color="white" />
+         </TouchableHighlight>
          </View>
         
          </View>
@@ -214,90 +165,3 @@ useEffect(() => {
 };
 
 export default Home;
-// import * as React from 'react';
-// import { View, StyleSheet, Button } from 'react-native';
-// import * as Speech from 'expo-speech';
-
-// export default function Home() {
-//   const speak = () => {
-//     const thingToSay = 'God is one. And I am using expo speech 1 2 4';
-//     Speech.speak(thingToSay);
-//   };
-
-//   return (
-//     <View style={styles.container}>
-//       <Button title="Press" onPress={speak} />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     backgroundColor: '#ecf0f1',
-//     padding: 8,
-//   },
-// });
-
-
-// import { useState } from 'react';
-// import { View, StyleSheet, Button } from 'react-native';
-// import { Audio } from 'expo-av';
-
-// export default function Home() {
-//   const [recording, setRecording] = useState();
-//   const [permissionResponse, requestPermission] = Audio.usePermissions();
-
-//   async function startRecording() {
-//     try {
-//       if (permissionResponse.status !== 'granted') {
-//         console.log('Requesting permission..');
-//         await requestPermission();
-//       }
-//       await Audio.setAudioModeAsync({
-//         allowsRecordingIOS: true,
-//         playsInSilentModeIOS: true,
-//       });
-
-//       console.log('Starting recording..');
-//       const { recording } = await Audio.Recording.createAsync( Audio.RecordingOptionsPresets.HIGH_QUALITY
-//       );
-//       setRecording(recording);
-//       console.log('Recording started');
-//     } catch (err) {
-//       console.error('Failed to start recording', err);
-//     }
-//   }
-
-//   async function stopRecording() {
-//     console.log('Stopping recording..');
-//     setRecording(undefined);
-//     await recording.stopAndUnloadAsync();
-//     await Audio.setAudioModeAsync(
-//       {
-//         allowsRecordingIOS: false,
-//       }
-//     );
-//     const uri = recording.getURI();
-//     console.log('Recording stopped and stored at', uri);
-//   }
-
-//   return (
-//     <View style={styles.container}>
-//       <Button
-//         title={recording ? 'Stop Recording' : 'Start Recording'}
-//         onPress={recording ? stopRecording : startRecording}
-//       />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     backgroundColor: '#ecf0f1',
-//     padding: 10,
-//   },
-// });

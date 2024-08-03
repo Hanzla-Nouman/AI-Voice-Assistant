@@ -1,7 +1,7 @@
 const Replicate = require("replicate");
 
 const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN, 
+  auth: process.env.REPLICATE_API_TOKEN,
 });
 
 const genImage = async () => {
@@ -21,15 +21,19 @@ const genImage = async () => {
         },
       }
     );
+    console.log("Generated Image", output);
     return output;
   } catch (error) {
     console.log("error in genImage", error);
+    throw error;
   }
 };
-const input = {
+
+const getText = async () => {
+  const input = {
     top_k: 50,
     top_p: 0.9,
-    prompt: "Does this message want to generate a new message an Ai picture,image,art or anything similiar? 'Draw a pic of astraunots' .Simply answer with yes or no",
+    prompt: "Does this message want to generate a new message an Ai picture,image,art or anything similar? 'Draw a pic of astronauts' .Simply answer with yes or no",
     max_tokens: 200,
     min_tokens: 0,
     temperature: 0.6,
@@ -37,35 +41,26 @@ const input = {
     presence_penalty: 0,
     frequency_penalty: 0,
   };
-  
-  const getOutput = async () => {
-    let output = "";
-  
-    for await (const event of replicate.stream("meta/meta-llama-3.1-405b-instruct", { input })) {
-      output += event; // Accumulate the event data
-      process.stdout.write(event.toString()); // Optionally write to stdout
-    }
-  
-    // console.log("\nComplete Output:\n", output); // Output the complete response
-  };
-  
-  getOutput().catch(error => console.error("Error in streaming:", error));
-  
-// const testGenImage = async () => {
-//   const result = await genImage();
-//   console.log(result);
-// };
 
-// testGenImage();
+  let output = "";
 
-const generateImageCont = async (req, res) => {
+  for await (const event of replicate.stream("meta/meta-llama-3.1-405b-instruct", { input })) {
+    output += event;
+    process.stdout.write(event.toString());
+  }
+
+  return output;
+};
+
+const getContentController = async (req, res) => {
   try {
+    console.log("here is req",req.body.prompt);
     const imageResponse = await genImage();
     res.status(200).json(imageResponse);
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Server Error" }); 
   }
 };
 
-module.exports = { generateImageCont };
+module.exports = { getContentController }; 
