@@ -3,15 +3,12 @@ import { dummyMessages } from "@/constants/mesages";
 import React, { useState,useEffect } from "react";
 import {
   Image,
-  Pressable,
   SafeAreaView,
   ScrollView,
-  ScrollViewBase,
   StatusBar,
   Text,
   TextInput,
   TouchableHighlight,
-  TouchableOpacity,
   View,
 } from "react-native";
 import {
@@ -30,15 +27,17 @@ const Home = () => {
     setText(e)
   }
  
-const getResponse = async () => {
+const getResponse = async (prompt) => {
   try {
+
+    console.log("Posting",prompt)
     const res = await fetch("http://192.168.100.3:4000/api/generate", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },body: JSON.stringify({
-        prompt: "This is a prompt"
+        prompt: prompt
       })
     });
     const data = await res.json();
@@ -48,9 +47,6 @@ const getResponse = async () => {
   }
 }
 
-const handleGetContent= async()=>{
- await getResponse()
-}
 
   return (
     <>
@@ -58,12 +54,6 @@ const handleGetContent= async()=>{
         <StatusBar barStyle={"dark-content"} />
 
         <SafeAreaView className=" mt-6 flex-1 justify-around ">
-          {/* <View className=" flex-row justify-center items-center mt-4">
-            <Image
-              style={{ height: hp(20), width: hp(20) }}
-              source={require("../assets/images/bot.png")}
-            />
-          </View> */}
           {messages.length > 0 ? (
             <>
               <View className="flex-row items-center justify-between pr-4">
@@ -76,7 +66,7 @@ const handleGetContent= async()=>{
                   style={{ fontSize: wp(5) }}
                   className="text-gray-700 font-medium "
                 >
-                  Assistant {text}
+                  Assistant
                 </Text>
                 </View>
                 <Ionicons name="menu" size={30} color="black" />
@@ -152,7 +142,7 @@ const handleGetContent= async()=>{
           <View className="bg-neutral-300">
         <View className="  flex-row  relative items-center rounded-full  my-1 mx-1 ">
          <TextInput className=" font-normal  text-lg p-3 w-full mr-10 pr-12 rounded-full pl-5 bg-white" onChangeText={(e)=>handleText(e)} multiline placeholder="Ask anything..."  />
-        <TouchableHighlight className="absolute right-1 bg-emerald-500 rounded-full p-2" onPress={handleGetContent}>
+        <TouchableHighlight className="absolute right-1 bg-emerald-500 rounded-full p-2" onPress={()=>getResponse(text)}>
          <Ionicons name="send" size={27} color="white" />
          </TouchableHighlight>
          </View>
