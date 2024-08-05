@@ -29,7 +29,7 @@ const genImage = async (prompt) => {
   }
 };
 
-const getText = async (prompt) => {
+const getText = async (prompt,messages) => {
   const input = {
     top_k: 0,
     top_p: 0.9,
