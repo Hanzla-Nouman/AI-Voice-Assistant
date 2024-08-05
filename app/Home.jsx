@@ -1,6 +1,6 @@
 import Features from "@/components/Features";
 import { dummyMessages } from "@/constants/mesages";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -16,13 +16,13 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Voice from "@react-native-community/voice";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
 const Home = () => {
   const [messages, setMessages] = useState(dummyMessages);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const scrollToDown = useRef()
 
   const handleText = (e) => {
     setText(e);
@@ -31,6 +31,7 @@ const Home = () => {
   const getResponse = async (prompt) => {
   
   try {
+    scrollToDown?.current?.scrollToEnd({animated: true})
       if(text.trim().length > 0){
         console.log("trying",text)
       let newMessages = [...messages];
@@ -57,6 +58,9 @@ const Home = () => {
       console.log("Error: " + error);
     }
   };
+useEffect(() => {
+  scrollToDown?.current?.scrollToEnd({animated: true})
+}, [])
 
   return (
     <>
@@ -82,12 +86,13 @@ const Home = () => {
                 <Ionicons name="menu" size={30} color="black" />
               </View>
               <View className="space-y-2 flex-1">
-                <View style={{}} className="bg-neutral-300 px-4 ">
+                <View style={{}} className="bg-neutral-300 px-4">
                   <ScrollView
                     overScrollMode="never"
                     bounces={false}
-                    className="space-y-4  h-full"
+                    className="space-y-2 h-full"
                     showsVerticalScrollIndicator={false}
+                    ref={scrollToDown}
                   >
                     {messages.map((message, index) => {
                       if (message.role === "assistant") {
@@ -155,7 +160,7 @@ const Home = () => {
                 className="absolute right-1 bg-emerald-500 rounded-full p-2"
                 onPress={() => getResponse(text)}
               >
-                {loading? <ActivityIndicator size={"large"}/>: <Ionicons name="send" size={27} color="white" />}
+               <Ionicons name="send" size={27} color="white" />
                
               </TouchableHighlight>
             </View>
