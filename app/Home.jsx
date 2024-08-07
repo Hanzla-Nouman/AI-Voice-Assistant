@@ -18,28 +18,33 @@ import {
 } from "react-native-responsive-screen";
 import { Ionicons } from "@expo/vector-icons";
 const Home = () => {
-  const [messages, setMessages] = useState(dummyMessages);
+  const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const scrollToDown = useRef()
+  const scrollToDown = useRef();
+  const inputRef = useRef();
 
   const handleText = (e) => {
     setText(e);
   };
 
   const getResponse = async (prompt) => {
-  
-  try {
-    scrollToDown?.current?.scrollToEnd({animated: true})
-      if(text.trim().length > 0){
-        console.log("trying",text)
-      let newMessages = [...messages];
-      newMessages.push({role:'user',content: text});
-      setText("")
-      setMessages([...newMessages]);
+    inputRef.current.blur();
+    console.log(1);
+    let newMessages = [...messages];
+    try {
+      scrollToDown?.current?.scrollToEnd({ animated: true });
+      if (text.trim().length > 0) {
+        console.log("trying", text);
+
+        newMessages.push({ role: "user", content: text });
+        setText("");
+        setMessages([...newMessages]);
       }
       console.log("Posting", prompt);
+      console.log("Messages", messages);
+
       setLoading(true);
       const res = await fetch("http://192.168.100.3:4000/api/generate", {
         method: "POST",
@@ -51,16 +56,23 @@ const Home = () => {
           prompt: prompt,
         }),
       });
+      console.log("Response", res);
       const data = await res.json();
       setLoading(false);
-      console.log(data);
+      console.log("returned data", data);
+
+      console.log("doing");
+      newMessages.push({ role: "assistant", content: data });
+      setMessages([...newMessages]);
+      scrollToDown?.current?.scrollToEnd({ animated: true });
     } catch (error) {
       console.log("Error: " + error);
     }
   };
-useEffect(() => {
-  scrollToDown?.current?.scrollToEnd({animated: true})
-}, [])
+  useEffect(() => {
+    scrollToDown?.current?.scrollToEnd({ animated: true });
+    inputRef?.current?.focus();
+  }, []);
 
   return (
     <>
@@ -68,29 +80,29 @@ useEffect(() => {
         <StatusBar barStyle={"dark-content"} />
 
         <SafeAreaView className=" mt-6 flex-1 justify-around ">
-        
-            <>
-              <View className="flex-row items-center justify-between  pr-4">
-                <View className="flex-row items-center">
-                  <Image
-                    style={{ height: hp(8), width: hp(8) }}
-                    source={require("../assets/images/bot.png")}
-                  />
-                  <Text
-                    style={{ fontSize: wp(5) }}
-                    className="text-gray-700 font-medium "
-                  >
-                    Assistant
-                  </Text>
-                </View>
-                <Ionicons name="menu" size={30} color="black" />
+          <>
+            <View className="flex-row items-center justify-between py-2 px-4">
+              <View className="flex-row items-center space-x-2 justify-center">
+                <Image
+                  style={{ height: hp(5), width: hp(5) }}
+                  source={require("../assets/images/robot.png")}
+                />
+                <Text
+                  style={{ fontSize: wp(5) }}
+                  className="text-gray-700 font-medium "
+                >
+                  Assistant
+                </Text>
               </View>
-              <View className="space-y-2 flex-1">
-                <View style={{}} className="bg-neutral-300 px-4">
+              <Ionicons name="menu" size={30} color="black" />
+            </View>
+            <View className="space-y-2 flex-1 ">
+              <View style={{}} className="bg-neutral-300 px-4 pt-2">
+                {!messages.length === 0 ? (
                   <ScrollView
                     overScrollMode="never"
                     bounces={false}
-                    className="space-y-2 h-full"
+                    className="space-y-2 h-full "
                     showsVerticalScrollIndicator={false}
                     ref={scrollToDown}
                   >
@@ -142,26 +154,49 @@ useEffect(() => {
                         );
                       }
                     })}
+                    {messages.length === 0 && (
+                      <View className="justify-center items-center flex-1  ">
+                        <Image
+                          source={require("../assets/images/chat-gpt.png")}
+                          style={{ height: hp(5), width: hp(5) }}
+                        />
+                      </View>
+                    )}
                   </ScrollView>
-                </View>
+                ) : (
+                  <View className="justify-center items-center  h-full ">
+                    <Image
+                      source={require("../assets/images/chat-gpt.png")}
+                      style={{ height: hp(5), width: hp(5) }}
+                    />
+                  </View>
+                )}
               </View>
-            </>
-          
+            </View>
+            {loading && (
+              <ActivityIndicator
+                className=" bg-neutral-300 "
+                size={"large"}
+                color={"green"}
+              />
+            )}
+          </>
+
           <View className="bg-neutral-300 ">
-            <View className="  flex-row  relative items-center rounded-full  my-1  mx-1 ">
+            <View className=" relative flex-row items-center  my-1 mx-1 ">
               <TextInput
-                className=" font-normal  text-lg p-3 w-full mr-10 pr-12 rounded-full pl-5 bg-white"
+                className=" font-normal   text-lg p-3  w-full   rounded-3xl pl-5 bg-white"
                 onChangeText={(e) => handleText(e)}
                 value={text}
                 multiline
                 placeholder="Ask anything..."
+                ref={inputRef}
               />
               <TouchableHighlight
-                className="absolute right-1 bg-emerald-500 rounded-full p-2"
+                className=" right-1 bottom-1 absolute bg-emerald-500 rounded-full p-2 "
                 onPress={() => getResponse(text)}
               >
-               <Ionicons name="send" size={27} color="white" />
-               
+                <Ionicons name="send" size={27} color="white" />
               </TouchableHighlight>
             </View>
           </View>

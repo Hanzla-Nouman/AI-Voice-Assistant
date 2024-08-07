@@ -22,14 +22,14 @@ const genImage = async (prompt) => {
       }
     );
     console.log("Generated Image", output);
-    return output;
+    return output[0];
   } catch (error) {
     console.log("error in genImage", error);
     throw error;
   }
 };
 
-const getText = async (prompt,messages) => {
+const getText = async (prompt) => {
   const input = {
     top_k: 0,
     top_p: 0.9,
@@ -49,8 +49,13 @@ const getText = async (prompt,messages) => {
   for await (const event of replicate.stream("meta/meta-llama-3-70b-instruct", {
     input,
   })) {
-    process.stdout.write(event.toString());
+    const data = event.toString();
+    process.stdout.write(data);
+    output += data;  // Append the event data to the output variable
   }
+  
+
+  console.log("Received Text",output)
   return output;
 };
 const getActualText = async (prompt) => {
@@ -58,7 +63,7 @@ const getActualText = async (prompt) => {
     top_k: 0,
     top_p: 0.9,
     prompt: prompt,
-    max_tokens: 512,
+    max_tokens: 100,
     min_tokens: 0,
     temperature: 0.6,
     system_prompt: "You are a helpful assistant",
@@ -73,8 +78,11 @@ const getActualText = async (prompt) => {
   for await (const event of replicate.stream("meta/meta-llama-3-70b-instruct", {
     input,
   })) {
-    process.stdout.write(event.toString());
+    const data = event.toString();
+    process.stdout.write(data);
+    output += data;  // Append the event data to the output variable
   }
+  console.log("Received actual Text",output)
   return output;
 };
 
@@ -90,9 +98,9 @@ const getContentController = async (req, res) => {
 
     // Trim the response and compare it in a case-sensitive manner
     if (typeof condRespnse === "string" && condRespnse.trim() === "No") {
-      response = await genImage(req.body.prompt);
-    } else {
       response = await getActualText(req.body.prompt);
+    } else {
+      response = await genImage(req.body.prompt);
     }
 
     res.status(200).json(response);
