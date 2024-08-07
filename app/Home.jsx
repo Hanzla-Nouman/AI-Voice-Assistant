@@ -1,6 +1,8 @@
 import Features from "@/components/Features";
 import { dummyMessages } from "@/constants/mesages";
 import React, { useState, useEffect, useRef } from "react";
+import LoadingDots from "react-native-loading-dots";
+
 import {
   ActivityIndicator,
   Image,
@@ -46,25 +48,25 @@ const Home = () => {
       console.log("Messages", messages);
 
       setLoading(true);
-      const res = await fetch("http://192.168.100.3:4000/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({
-          prompt: prompt,
-        }),
-      });
-      console.log("Response", res);
-      const data = await res.json();
-      setLoading(false);
-      console.log("returned data", data);
+      // const res = await fetch("http://192.168.100.3:4000/api/generate", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     prompt: prompt,
+      //   }),
+      // });
+      // console.log("Response", res);
+      // const data = await res.json();
+      // setLoading(false);
+      // console.log("returned data", data);
 
-      console.log("doing");
-      newMessages.push({ role: "assistant", content: data });
-      setMessages([...newMessages]);
-      scrollToDown?.current?.scrollToEnd({ animated: true });
+      // console.log("doing");
+      // newMessages.push({ role: "assistant", content: data });
+      // setMessages([...newMessages]);
+      // scrollToDown?.current?.scrollToEnd({ animated: true });
     } catch (error) {
       console.log("Error: " + error);
     }
@@ -85,7 +87,7 @@ const Home = () => {
               <View className="flex-row items-center space-x-2 justify-center">
                 <Image
                   style={{ height: hp(5), width: hp(5) }}
-                  source={require("../assets/images/robot.png")}
+                  source={require("../assets/images/robot01.png")}
                 />
                 <Text
                   style={{ fontSize: wp(5) }}
@@ -98,7 +100,7 @@ const Home = () => {
             </View>
             <View className="space-y-2 flex-1 ">
               <View style={{}} className="bg-neutral-300 px-4 pt-2">
-                {!messages.length === 0 ? (
+                {messages.length > 0 ? (
                   <ScrollView
                     overScrollMode="never"
                     bounces={false}
@@ -118,7 +120,7 @@ const Home = () => {
                                 <Image
                                   resizeMode="contain"
                                   className="rounded-xl"
-                                  style={{ width: wp(60), height: wp(60) }}
+                                  style={{ width: wp(65), height: wp(65) }}
                                   source={{
                                     uri: message.content,
                                   }}
@@ -136,7 +138,7 @@ const Home = () => {
                                 style={{}}
                                 className="bg-emerald-100 max-w-[300]  rounded-xl p-2 rounded-tl-none"
                               >
-                                <Text>{message.content}</Text>
+                                <Text style={{fontSize:hp(2)}} className="">{message.content}</Text>
                               </View>
                             </View>
                           );
@@ -148,7 +150,7 @@ const Home = () => {
                               style={{}}
                               className="bg-white rounded-xl max-w-[300] p-2 rounded-tr-none"
                             >
-                              <Text>{message.content}</Text>
+                              <Text style={{fontSize:hp(2)}}>{message.content}</Text>
                             </View>
                           </View>
                         );
@@ -174,18 +176,21 @@ const Home = () => {
               </View>
             </View>
             {loading && (
-              <ActivityIndicator
-                className=" bg-neutral-300 "
-                size={"large"}
-                color={"green"}
-              />
+              // <ActivityIndicator
+              //   className=" bg-neutral-300 "
+              //   size={"large"}
+              //   color={"green"}
+              // />
+              <View className="items-center justify-center flex-row pb-5 w-screen bg-neutral-300 ">
+              <LoadingDots size={15} bounceHeight={6} colors={["#4ade80", "#22c55e", "#059669", "#15803d"]}/>
+              </View>
             )}
           </>
 
           <View className="bg-neutral-300 ">
-            <View className=" relative flex-row items-center  my-1 mx-1 ">
+            <View className=" relative flex-row items-center justify-center   my-1 mx-1 ">
               <TextInput
-                className=" font-normal   text-lg p-3  w-full   rounded-3xl pl-5 bg-white"
+                className=" font-normal   text-lg p-3   w-full   rounded-3xl pl-5 bg-white"
                 onChangeText={(e) => handleText(e)}
                 value={text}
                 multiline
@@ -196,7 +201,7 @@ const Home = () => {
                 className=" right-1 bottom-1 absolute bg-emerald-500 rounded-full p-2 "
                 onPress={() => getResponse(text)}
               >
-                <Ionicons name="send" size={27} color="white" />
+                <Ionicons name="send" size={25} color="white" />
               </TouchableHighlight>
             </View>
           </View>
