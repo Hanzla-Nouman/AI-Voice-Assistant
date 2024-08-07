@@ -16,7 +16,7 @@ const dalleEndpoint = 'https://api.openai.com/v1/images/generations';
 export const apiCall = async(prompt,messages)=>{
     try {
 
-        console.log("trying")
+        
         const res = await axios.post(chatGptEndpoint,{
           
             model: "gpt-3.5-turbo",
@@ -29,8 +29,7 @@ export const apiCall = async(prompt,messages)=>{
             "Authorization":"Bearer "+api_key,
             "Content-Type":"application/json"
          },})
-        console.log("Please enter")
-        console.log(res)
+       
 
     } catch (error) {
         console.log("Here is error",error)

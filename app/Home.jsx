@@ -33,19 +33,18 @@ const Home = () => {
 
   const getResponse = async (prompt) => {
     inputRef.current.blur();
-    console.log(1);
+   
     let newMessages = [...messages];
     try {
       scrollToDown?.current?.scrollToEnd({ animated: true });
       if (text.trim().length > 0) {
-        console.log("trying", text);
+        
 
         newMessages.push({ role: "user", content: text });
         setText("");
         setMessages([...newMessages]);
       }
-      console.log("Posting", prompt);
-      console.log("Messages", messages);
+     
 
       setLoading(true);
       // const res = await fetch("http://192.168.100.3:4000/api/generate", {
@@ -58,12 +57,12 @@ const Home = () => {
       //     prompt: prompt,
       //   }),
       // });
-      // console.log("Response", res);
+     
       // const data = await res.json();
       // setLoading(false);
-      // console.log("returned data", data);
+     
 
-      // console.log("doing");
+      
       // newMessages.push({ role: "assistant", content: data });
       // setMessages([...newMessages]);
       // scrollToDown?.current?.scrollToEnd({ animated: true });
@@ -176,11 +175,6 @@ const Home = () => {
               </View>
             </View>
             {loading && (
-              // <ActivityIndicator
-              //   className=" bg-neutral-300 "
-              //   size={"large"}
-              //   color={"green"}
-              // />
               <View className="items-center justify-center flex-row pb-5 w-screen bg-neutral-300 ">
               <LoadingDots size={15} bounceHeight={6} colors={["#4ade80", "#22c55e", "#059669", "#15803d"]}/>
               </View>

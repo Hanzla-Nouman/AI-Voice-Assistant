@@ -21,7 +21,6 @@ const genImage = async (prompt) => {
         },
       }
     );
-    console.log("Generated Image", output);
     return output[0];
   } catch (error) {
     console.log("error in genImage", error);
@@ -55,7 +54,6 @@ const getText = async (prompt) => {
   }
   
 
-  console.log("Received Text",output)
   return output;
 };
 const getActualText = async (prompt) => {
@@ -82,17 +80,13 @@ const getActualText = async (prompt) => {
     process.stdout.write(data);
     output += data;  // Append the event data to the output variable
   }
-  console.log("Received actual Text",output)
+
   return output;
 };
 
 const getContentController = async (req, res) => {
   try {
-    console.log("Received request with prompt:", req.body.prompt);
     const condRespnse = await getText(req.body.prompt);
-    
-    console.log("Response from getText:", condRespnse);
-    console.log("Type of response:", typeof condRespnse);
 
     let response;
 
