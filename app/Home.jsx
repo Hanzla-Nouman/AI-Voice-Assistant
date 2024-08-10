@@ -47,25 +47,25 @@ const Home = () => {
      
 
       setLoading(true);
-      // const res = await fetch("http://192.168.100.3:4000/api/generate", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Accept: "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     prompt: prompt,
-      //   }),
-      // });
+      const res = await fetch("http://192.168.100.3:4000/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          prompt: prompt,
+        }),
+      });
      
-      // const data = await res.json();
-      // setLoading(false);
+      const data = await res.json();
+      setLoading(false);
      
 
       
-      // newMessages.push({ role: "assistant", content: data });
-      // setMessages([...newMessages]);
-      // scrollToDown?.current?.scrollToEnd({ animated: true });
+      newMessages.push({ role: "assistant", content: data });
+      setMessages([...newMessages]);
+      scrollToDown?.current?.scrollToEnd({ animated: true });
     } catch (error) {
       console.log("Error: " + error);
     }

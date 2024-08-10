@@ -87,7 +87,6 @@ const getActualText = async (prompt) => {
 const getContentController = async (req, res) => {
   try {
     const condRespnse = await getText(req.body.prompt);
-
     let response;
 
     // Trim the response and compare it in a case-sensitive manner
